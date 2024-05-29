@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 //A array , i index of element , m size of array
+// used for maintaining heap to be sorted
 void maxHeapify(int A[] , int i , int n){
     int l = 2 * i;//Get left of node
     int r = (2 * i) + 1;//get right of node
