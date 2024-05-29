@@ -23,3 +23,12 @@ void maxHeapify(int A[] , int i , int n){
      maxHeapify(A , large , n);//recursion to sort all heap
      //large new value
 }
+
+//Build heap from unsorted array
+void BuildHeap(int A[] , int n){
+    //nodes greater than n / 2 are leaves (no children)
+    //start point is 1
+    for(int i = n / 2 ; i >= 1 ; --i){
+        maxHeapify(A , i , n);//to maintain heap sorted
+    }
+}
