@@ -80,7 +80,7 @@ class circularSingleLinkedList{
               }
           }
       }
-      void deletFromBegin(){
+      void deleteFromBegin(){
           node * curr = first;
           if(first == NULL){
               return;
@@ -95,6 +95,7 @@ class circularSingleLinkedList{
               last -> link = first;
               delete curr;
           }
+          count--;
       }
       void deleteFromEnd(){
           node * curr = first;
@@ -107,9 +108,35 @@ class circularSingleLinkedList{
               first = NULL;
               last = NULL;
               delete curr;
+              count--;
               return;
           }
-          while(curr ->)
+          while(curr != last){
+              pre = curr;
+              curr = curr -> link;
+          }
+          pre -> link = first;
+          last = pre;
+          count--;
+          delete curr;
+      }
+      void deleteAt(int indx ){
+          if(indx < 0 or indx > count - 1)return;
+          if(indx == 0){
+              deleteFromBegin();
+          }
+          else if(indx == count - 1){
+              deleteFromEnd();
+          }
+          else{
+              node * curr = first;
+              node * pre = NULL;
+              for(int i = 0 ; i < indx ; ++i){
+                  pre = curr;
+                  curr = curr -> link;
+              }
+              
+          }
       }
 };
 int main() {
@@ -120,6 +147,7 @@ int main() {
     r.insertAtBegin(4);r.insertAtBegin(1);
     r.insertAtEnd(9);r.insertAtEnd(51);
     r.insert(2,15);
+    r.deleteFromBegin();
      r.print();
     return 0;
 }
