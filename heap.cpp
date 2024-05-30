@@ -3,14 +3,17 @@
 using namespace std;
 //A array , i index of element , m size of array
 void maxHeapify(int A[] , int i , int n){
+    //cout << A[i] << "Point\n";
     int l = 2 * i;//Get left of node
     int r = (2 * i) + 1;//get right of node
     int large = i;//save largest value of each node
     if(l <= n and A[l] > A[large]){
+       // cout << A[l] << endl;
         //check for greatest
         large = l;//exchange with left child
     }
     if(r  <= n and A[r] > A[large]){
+        //cout << A[r] << endl;
         large = r;//exchange with right child
     }
     if(large != i){
@@ -22,7 +25,7 @@ void maxHeapify(int A[] , int i , int n){
          maxHeapify(A , large , n);//recursion to sort all heap
      //large new value
     }
-    
+    return;
 }
 //Build heap from unsorted array
 void BuildHeap(int A[] , int n){
@@ -38,13 +41,53 @@ void HeapSort(int A[] , int n){
        return;
    }
    A[1] = A[n];
-   maxHeapify(A,1,n);
+   maxHeapify(A,1,n - 1);
    HeapSort(A,n - 1);
 }
+
+int extractMax(int A[] , int n){
+    if(n < 1) return -1;
+    int max  = A[1];
+    A[1] = A[n];
+    maxHeapify(A , 1 , n - 1);
+    return max;
+}
+
+int maximum(int A[]){
+    return A[1];
+}
+
+void increaseKey(int A[] ,int i , int key){
+    if(key < A[i] ){
+        A[i] = key;
+        return;
+    }
+    A[i] = key;
+    int parent = i / 2;
+    while(i > 1 and A[parent] < A[i]){
+        swap(A[parent] , A[i]);
+        i = parent;
+        parent = i / 2;
+    }
+}
+
+void heapInsert(int A[] , int& n , int key){
+    A[n] = key - 1;
+    increaseKey(A,n,key);
+    return ;
+}
 int main() {
-    int arr[] = {0,1 , 15 , 55 , 34 };
-    BuildHeap(arr , 4);
-    for(int i = 1 ; i <= 4 ; ++i){
+    int arr[] = {0, 1, 13 , 0 , 50};
+    int n = 4;
+    BuildHeap(arr , n);
+    for(int i = 1 ; i <= n;++i){
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+    n += 1;
+    heapInsert(arr, n , 100);
+    cout << "n: " << n << endl;
+    for(int i = 1 ; i <= n;++i){
         cout << arr[i] << " ";
     }
     return 0;
