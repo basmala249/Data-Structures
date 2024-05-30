@@ -12,6 +12,22 @@ void InsertionSort(int A[] , int n){
    
     }
 }
+
+void SelectionSort(int A[] , int n){
+    for(int i = 0 ; i < n - 1 ; ++i){
+        int least = i;
+        for(int j = i + 1 ; j < n ; ++j ){
+            if(A[least] > A[j]){
+                least = j;
+            }
+        }
+        if(least != i){
+            swap(A[i] , A[least]);
+        }
+    }
+}
+
+
 void print(int arr[] , int n){
     for(int j = 0 ; j < n ; ++j){
             cout <<  arr[j] << " ";
