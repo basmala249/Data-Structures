@@ -135,7 +135,9 @@ class circularSingleLinkedList{
                   pre = curr;
                   curr = curr -> link;
               }
-              
+              pre -> link = curr -> link;
+              delete curr;
+              count--;
           }
       }
 };
@@ -147,7 +149,9 @@ int main() {
     r.insertAtBegin(4);r.insertAtBegin(1);
     r.insertAtEnd(9);r.insertAtEnd(51);
     r.insert(2,15);
-    r.deleteFromBegin();
+    r.deleteAt(3);
+    r.deleteAt(4);
+    r.deleteAt(0);
      r.print();
     return 0;
 }
