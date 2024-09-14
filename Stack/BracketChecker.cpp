@@ -17,7 +17,7 @@ int main() {
                     fnd = true;
                 }
             }
-     else if(s[i] == '/' and i != n and s[i + 1] == '*'){
+     else if(s[i] == '/' and i + 1 != n and s[i + 1] == '*'){
                 st.push(s[i]);
                 i++;
             }
@@ -38,7 +38,7 @@ int main() {
                 st.pop();
                 fnd = false;
             }
-        else if(!st.empty() and s[i] == '*' and i != n and s[i + 1] == '/' and st.top() == '/'){
+        else if(!st.empty() and s[i] == '*' and i + 1 != n and s[i + 1] == '/' and st.top() == '/'){
                 st.pop();
                 i++;
             }
