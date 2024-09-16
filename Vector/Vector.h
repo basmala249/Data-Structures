@@ -27,6 +27,7 @@ public:
     void insert(int indx , T val);
     void rotateRight();
     void rotateLeft();
+    void remove(int indx);
     T operator[](int i );
     T find(T val);
     ~Vector();
@@ -63,6 +64,16 @@ void Vector<T>::set(int indx, T val) {
     if(size == maxSize)inCapacity();
     if(indx == size)size++;
     arr[indx] = val ;
+}
+template<class T>
+void Vector<T>::remove(int indx) {
+    if(indx < 0 or indx >= size)return;
+    int k = arr[indx];
+    for(int i = indx ; i < size - 1; ++i){
+         arr[i] = arr[i + 1];
+    }
+    size--;
+    cout << k << '\n';
 }
 template<class T>
 T Vector<T>::front() {
