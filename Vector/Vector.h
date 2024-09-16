@@ -13,6 +13,7 @@ private:
     T *arr = nullptr;
     int size = 0 ;
     int maxSize ;
+    void improvedFind(int i);
 public:
     Vector();
     Vector(int maxSize);
@@ -161,7 +162,10 @@ void Vector<T>::rotateLeft() {
 template<class T>
 T Vector<T>::find(T val) {
     for(int i = 0 ; i < size ; ++i){
-        if(arr[i] == val)return i;
+        if(arr[i] == val) {
+            improvedFind(i);
+            return i;
+        }
     }
     throw out_of_range("Not Found");
 }
@@ -174,4 +178,9 @@ template<class T>
 Vector<T> ::~Vector() {
     delete [] arr;
     arr = nullptr;
+}
+
+template<class T>
+void Vector<T>::improvedFind(int i) {
+    if(i != 0)swap(arr[i] , arr[i - 1]);
 }
