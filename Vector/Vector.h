@@ -21,9 +21,12 @@ public:
     void print();
     T front();
     T back();
+    void rotateRight(int val);
     void push_back(T val);
     void inCapacity();
     void insert(int indx , T val);
+    void rotateRight();
+    void rotateLeft();
     T operator[](int i );
     T find(T val);
     ~Vector();
@@ -108,6 +111,42 @@ void Vector<T>::print() {
     }
     cout << '\n';
 }
+
+template<class T>
+void Vector<T>::rotateRight() {
+    if(size < 2)return;
+    int k = arr[size - 1];
+    for(int i = size - 1 ; i > 0 ; --i){
+        arr[i] = arr[i - 1];
+    }
+    arr[0] = k;
+}
+
+template<class T>
+void Vector<T>::rotateRight(int val) {
+    if(size < 2)return;
+    if(val == 1){
+        rotateRight();
+        return;
+    }
+    int * arr1 = new T[maxSize];
+    for(int i = 0 ; i < size ; ++i){
+        arr1[(i + val) % size] = arr[i];
+    }
+    swap(arr, arr1);
+    delete [] arr1;
+}
+
+template<class T>
+void Vector<T>::rotateLeft() {
+    if(size < 2)return;
+    int k = arr[0];
+    for(int i = 0 ; i < size - 1 ; ++i){
+        arr[i] = arr[i + 1];
+    }
+    arr[size - 1] = k;
+}
+
 template<class T>
 T Vector<T>::find(T val) {
     for(int i = 0 ; i < size ; ++i){
