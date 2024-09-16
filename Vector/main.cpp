@@ -7,7 +7,9 @@ int main() {
     for(int i = 0 ; i < 10 ; ++i){
         v.set(i , i);
     }
+    v.insert(2 , 1000);
     v.print();
-    cout << v.find(55) << " " << v.find(3) << '\n';
+    v.push_back(34);
+    cout << v.find(34) << " " << v.find(3) << '\n';
     return 0;
 }
