@@ -47,11 +47,11 @@ void redBlackTree::insert(RBTNode *node, RBTNode *parent, int key) {
     }
 }
 void redBlackTree::rebalance(RBTNode *parent, int val) {
-    RBTNode *grandparent = parent->parent;
-    if (grandparent == NULL) {
+    if(parent -> color == 'B') return;
+    if (root == parent or parent -> parent == NULL) { 
         return;
     }
-
+    RBTNode *grandparent = parent->parent;
     RBTNode *uncle = (parent == grandparent->left) ? grandparent->right : grandparent->left;
 
     // Case 1: Parent and uncle are both red
@@ -59,11 +59,7 @@ void redBlackTree::rebalance(RBTNode *parent, int val) {
         parent->color = 'B';
         uncle->color = 'B';
         grandparent->color = 'R';
-        if (grandparent == root) {
-            grandparent->color = 'B';
-            return;
-        }
-        rebalance(grandparent, parent->data);
+        rebalance(parent -> parent, parent->data);
     } else {
         // Case 2: Uncle is black or NULL
 
@@ -81,18 +77,16 @@ void redBlackTree::rebalance(RBTNode *parent, int val) {
         }
         // Left-Right case
         else if (parent == grandparent->left && val > parent->data) {
+            parent -> right -> color = 'B';
+            grandparent -> color = 'R';
             rotateLeft(parent);
-            parent = parent->parent;  // Update parent after rotation
-            parent->color = 'B';
-            grandparent->color = 'R';
             rotateRight(grandparent);
         }
         // Right-Left case
         else if (parent == grandparent->right && val < parent->data) {
+            parent -> left -> color = 'B';
+            grandparent -> color = 'R';
             rotateRight(parent);
-            parent = parent->parent;  // Update parent after rotation
-            parent->color = 'B';
-            grandparent->color = 'R';
             rotateLeft(grandparent);
         }
     }
