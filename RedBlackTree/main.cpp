@@ -1,7 +1,8 @@
 #include <iostream>
 #include "redBlackTree.h"
 using namespace std;
-
+//7
+// 19 13 15 7 3 6 4
 
 int main() {
     redBlackTree  tree;
