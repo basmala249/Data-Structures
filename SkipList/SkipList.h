@@ -119,8 +119,21 @@ void SkipList::print() {
 
 string SkipList::search(int key) {
     SkipNode* temp = head;
-    
+    while(temp != NULL) {
+        if(temp->key == key) {
+            return "Found\n";
+        }
+        else if(temp-> right -> key > key) {
+            temp = temp->down;
+        }
+        else {
+            temp = temp->right;
+        }
+    }
+    return "Not Found\n";
 }
+
+
 
 
 #endif //SKIPLIST_H
