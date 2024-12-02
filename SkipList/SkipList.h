@@ -1,7 +1,3 @@
-//
-// Created by Lenovo on 12/2/2024.
-//
-
 #ifndef SKIPLIST_H
 #define SKIPLIST_H
 #include <bits/stdc++.h>
@@ -29,7 +25,7 @@ class SkipList {
     // ~SkipList();
     void insert(int key);
     string search(int key);
-    // bool del(int key);
+    void remove(int key);
     void print();
 
 };
@@ -51,6 +47,7 @@ void SkipList::insert(int key) {
         }
         else {
             if(temp->down == NULL) {
+                temp -> right -> left = newNode ;
                 newNode->right = temp->right;
                 newNode->left = temp;
                 temp -> right = newNode;
@@ -83,6 +80,7 @@ void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode) {
            newTail->down = tail;
            head = newHead;
            tail = newTail;
+           tail -> left = temp;
            temp->right = head->right;
            temp->left = head;
            head->right = temp;
@@ -92,6 +90,7 @@ void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode) {
         }
         SkipNode* curr = nodes.back();
         nodes.pop_back();
+        curr -> right -> left = temp ;
         temp -> right = curr->right;
         temp -> left = curr;
         curr -> right = temp;
@@ -105,7 +104,7 @@ void SkipList::print() {
     SkipNode* start = head; // Start at the topmost level
     while (start) {         // Traverse downwards through the levels
         SkipNode* temp = start;
-        while (temp) {      // Traverse right through the current level
+        while (temp!= NULL ) {      // Traverse right through the current level
             cout << temp->key;
             if (temp->right) {
                 cout << " -> ";
@@ -133,7 +132,50 @@ string SkipList::search(int key) {
     return "Not Found\n";
 }
 
+void SkipList::remove(int key) {
+    SkipNode* temp = head;
+    bool found = false;
 
-
-
+    // Traverse the skip list to find the node with the key
+    while (temp != NULL) {
+        if (temp->right->key == key) {
+            temp = temp->right;
+            found = true;
+            break;
+        } else if (temp->right == NULL || temp->right->key > key) {
+            temp = temp->down; // Move down a level
+        } else {
+            temp = temp->right; // Move to the next node on the same level
+        }
+    }
+    cout << temp->left->key<<endl;
+    // Remove the node from all levels
+    while (temp != NULL) {
+        SkipNode* down = temp->down; // Save the pointer to the node below
+        // Unlink the current node
+        if (temp->left) {
+            //cout << temp->left->key<<endl;
+            temp->left->right = temp->right;
+        }
+        if (temp->right) {
+            temp->right->left = temp->left;
+        }
+        // Delete the current node
+        delete temp;
+        //print();
+        temp = down; // Move down a level
+    }
+}
+int main(){
+    SkipList s;
+    s.insert(100);
+    s.insert(50);
+    s.insert(2);
+    s.insert(4);
+    s.insert(1);
+    s.insert(5);
+    s.insert(32);
+    s.insert(35);
+    s.print() ;
+}
 #endif //SKIPLIST_H
