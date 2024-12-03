@@ -78,6 +78,8 @@ void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode) {
            newTail->left = newHead;
            newHead->down = head;
            newTail->down = tail;
+           head -> up = newHead;
+           tail -> up = newTail;
            head = newHead;
            tail = newTail;
            tail -> left = temp;
@@ -148,7 +150,6 @@ void SkipList::remove(int key) {
             temp = temp->right; // Move to the next node on the same level
         }
     }
-    cout << temp->left->key<<endl;
     // Remove the node from all levels
     while (temp != NULL) {
         SkipNode* down = temp->down; // Save the pointer to the node below
@@ -166,16 +167,4 @@ void SkipList::remove(int key) {
         temp = down; // Move down a level
     }
 }
-int main(){
-    SkipList s;
-    s.insert(100);
-    s.insert(50);
-    s.insert(2);
-    s.insert(4);
-    s.insert(1);
-    s.insert(5);
-    s.insert(32);
-    s.insert(35);
-    s.print() ;
-}
-#endif //SKIPLIST_H
+#endif // SKIPLIST_H
