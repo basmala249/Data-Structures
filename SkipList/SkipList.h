@@ -18,16 +18,21 @@ struct SkipNode {
 class SkipList {
     SkipNode* head = NULL;
     SkipNode* tail = NULL;
+    map <int, int> nodeCount;
+    int Level = 0;
     bool tossCoin();
-    void levelUP(vector<SkipNode*>& , SkipNode* );
+    void levelUP(vector<SkipNode*>& , SkipNode* , int);
     public:
     SkipList();
     // ~SkipList();
     void insert(int key);
     string search(int key);
+    void CleanUp();
     void remove(int key);
     void print();
+    void inCrementLevel();
 
+    void deCrementLevel();
 };
 
 SkipList::SkipList() {
@@ -35,11 +40,14 @@ SkipList::SkipList() {
     tail = new SkipNode(posINF);
     head->right = tail;
     tail->left = head;
+    Level = 1;
+    nodeCount[Level] += 2;
 }
 
 void SkipList::insert(int key) {
     vector<SkipNode*> Randomized;
     SkipNode* temp = head;
+    int l = Level;
     SkipNode* newNode = new SkipNode(key);
     while(true) {
         if(key > temp-> right ->key) {
@@ -47,6 +55,7 @@ void SkipList::insert(int key) {
         }
         else {
             if(temp->down == NULL) {
+                nodeCount[l]++;
                 temp -> right -> left = newNode ;
                 newNode->right = temp->right;
                 newNode->left = temp;
@@ -54,12 +63,13 @@ void SkipList::insert(int key) {
                 break;
             }
             else {
+                l--;
                 Randomized.push_back(temp);
                 temp = temp->down;
             }
         }
     }
-    levelUP(Randomized, newNode);
+    levelUP(Randomized, newNode , l + 1);
 }
 
 bool SkipList::tossCoin() {
@@ -68,10 +78,12 @@ bool SkipList::tossCoin() {
         return result;
 }
 
-void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode) {
+void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode , int l) {
     if(tossCoin()) {
         SkipNode* temp = new SkipNode(newNode->key);
         if(nodes.empty()) {
+           inCrementLevel();
+           nodeCount[l] += 3;
            SkipNode* newHead = new SkipNode(head->key);
            SkipNode* newTail = new SkipNode(tail->key);
            newHead->right = newTail;
@@ -98,7 +110,8 @@ void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode) {
         curr -> right = temp;
         temp -> down = newNode;
         newNode -> up = temp;
-        levelUP(nodes, temp);
+        nodeCount[l]++;
+        levelUP(nodes, temp , l + 1);
     }
 }
 
@@ -137,7 +150,7 @@ string SkipList::search(int key) {
 void SkipList::remove(int key) {
     SkipNode* temp = head;
     bool found = false;
-
+    int cur = Level;
     // Traverse the skip list to find the node with the key
     while (temp != NULL) {
         if (temp->right->key == key) {
@@ -146,6 +159,7 @@ void SkipList::remove(int key) {
             break;
         } else if (temp->right == NULL || temp->right->key > key) {
             temp = temp->down; // Move down a level
+            cur--;
         } else {
             temp = temp->right; // Move to the next node on the same level
         }
@@ -155,16 +169,56 @@ void SkipList::remove(int key) {
         SkipNode* down = temp->down; // Save the pointer to the node below
         // Unlink the current node
         if (temp->left) {
-            //cout << temp->left->key<<endl;
             temp->left->right = temp->right;
         }
         if (temp->right) {
             temp->right->left = temp->left;
         }
+        if(down) {
+            down -> up = NULL;
+        }
+        nodeCount[cur]--;
+        if (nodeCount[cur] == 0) {
+            nodeCount.erase(cur);
+        }
         // Delete the current node
         delete temp;
-        //print();
         temp = down; // Move down a level
+        cur--;
+    }
+    CleanUp();
+}
+
+void SkipList::inCrementLevel() {
+    Level++;
+}
+void SkipList::deCrementLevel() {
+    Level--;
+}
+void SkipList::CleanUp() {
+    int cur = Level;
+    bool foundToBeDeleted = true;
+    while(cur != 1 && foundToBeDeleted) {
+        if(nodeCount[cur] == 2 || nodeCount[cur] == nodeCount[cur - 1]) {
+            deCrementLevel();
+            SkipNode* temp = head ;
+            head = head->down;
+            tail = tail->down;
+            while(temp != NULL) {
+                temp -> down -> up = NULL;
+                SkipNode* t = temp;
+                temp = temp -> right;
+                delete t;
+            }
+            cur--;
+        }
+        else {
+            foundToBeDeleted = false;
+        }
     }
 }
+
+
+
+
 #endif // SKIPLIST_H
