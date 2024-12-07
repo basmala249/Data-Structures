@@ -1,65 +1,63 @@
-#ifndef SKIPLIST_H
-#define SKIPLIST_H
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-ll negINF = -1e9 , posINF = 1e9;
+ll negINF = -1e9, posINF = 1e9;
+template <typename T>
 struct SkipNode {
-    int key ;
-    SkipNode* up = NULL;
-    SkipNode* down = NULL;
-    SkipNode* right = NULL;
-    SkipNode* left = NULL;
-    SkipNode(int val) {
+    T key;
+    SkipNode<T>* up = NULL;
+    SkipNode<T>* down = NULL;
+    SkipNode<T>* right = NULL;
+    SkipNode<T>* left = NULL;
+    SkipNode(T val) {
         key = val;
     }
 };
-
+template <typename T>
 class SkipList {
-    SkipNode* head = NULL;
-    SkipNode* tail = NULL;
+    SkipNode<T>* head = NULL;
+    SkipNode<T>* tail = NULL;
     map <int, int> nodeCount;
     int Level = 0;
     bool tossCoin();
-    void levelUP(vector<SkipNode*>& , SkipNode* , int);
-    public:
+    void levelUP(vector<SkipNode<T>*>&, SkipNode<T>*, int);
+public:
     SkipList();
     // ~SkipList();
-    void insert(int key);
-    string search(int key);
+    void insert(T key);
+    string search(T key);
     void CleanUp();
-    void remove(int key);
+    void remove(T key);
     void print();
     void inCrementLevel();
-
     void deCrementLevel();
 };
-
-SkipList::SkipList() {
-    head = new SkipNode(negINF);
-    tail = new SkipNode(posINF);
+template <typename T>
+SkipList<T>::SkipList() {
+    head = new SkipNode<T>(negINF);
+    tail = new SkipNode<T>(posINF);
     head->right = tail;
     tail->left = head;
     Level = 1;
     nodeCount[Level] += 2;
 }
-
-void SkipList::insert(int key) {
-    vector<SkipNode*> Randomized;
-    SkipNode* temp = head;
+template <typename T>
+void SkipList<T>::insert(T key) {
+    vector<SkipNode<T>*> Randomized;
+    SkipNode<T>* temp = head;
     int l = Level;
-    SkipNode* newNode = new SkipNode(key);
-    while(true) {
-        if(key > temp-> right ->key) {
+    SkipNode<T>* newNode = new SkipNode<T>(key);
+    while (true) {
+        if (key > temp->right->key) {
             temp = temp->right;
         }
         else {
-            if(temp->down == NULL) {
+            if (temp->down == NULL) {
                 nodeCount[l]++;
-                temp -> right -> left = newNode ;
+                temp->right->left = newNode;
                 newNode->right = temp->right;
                 newNode->left = temp;
-                temp -> right = newNode;
+                temp->right = newNode;
                 break;
             }
             else {
@@ -69,57 +67,57 @@ void SkipList::insert(int key) {
             }
         }
     }
-    levelUP(Randomized, newNode , l + 1);
+    levelUP(Randomized, newNode, l + 1);
 }
-
-bool SkipList::tossCoin() {
-        // Generate a random number (0 or 1)
-        int result = rand() % 2; // 0 for Tail, 1 for Head
-        return result;
+template <typename T>
+bool SkipList<T>::tossCoin() {
+    // Generate a random number (0 or 1)
+    int result = rand() % 2; // 0 for Tail, 1 for Head
+    return result;
 }
-
-void SkipList::levelUP(vector<SkipNode*>& nodes, SkipNode* newNode , int l) {
-    if(tossCoin()) {
-        SkipNode* temp = new SkipNode(newNode->key);
-        if(nodes.empty()) {
-           inCrementLevel();
-           nodeCount[l] += 3;
-           SkipNode* newHead = new SkipNode(head->key);
-           SkipNode* newTail = new SkipNode(tail->key);
-           newHead->right = newTail;
-           newTail->left = newHead;
-           newHead->down = head;
-           newTail->down = tail;
-           head -> up = newHead;
-           tail -> up = newTail;
-           head = newHead;
-           tail = newTail;
-           tail -> left = temp;
-           temp->right = head->right;
-           temp->left = head;
-           head->right = temp;
-           temp -> down = newNode;
-           newNode -> up = temp;
-           return;
+template <typename T>
+void SkipList<T>::levelUP(vector<SkipNode<T>*>& nodes, SkipNode<T>* newNode, int l) {
+    if (tossCoin()) {
+        SkipNode<T>* temp = new SkipNode<T>(newNode->key);
+        if (nodes.empty()) {
+            inCrementLevel();
+            nodeCount[l] += 3;
+            SkipNode<T>* newHead = new SkipNode<T>(head->key);
+            SkipNode<T>* newTail = new SkipNode<T>(tail->key);
+            newHead->right = newTail;
+            newTail->left = newHead;
+            newHead->down = head;
+            newTail->down = tail;
+            head->up = newHead;
+            tail->up = newTail;
+            head = newHead;
+            tail = newTail;
+            tail->left = temp;
+            temp->right = head->right;
+            temp->left = head;
+            head->right = temp;
+            temp->down = newNode;
+            newNode->up = temp;
+            return;
         }
-        SkipNode* curr = nodes.back();
+        SkipNode<T>* curr = nodes.back();
         nodes.pop_back();
-        curr -> right -> left = temp ;
-        temp -> right = curr->right;
-        temp -> left = curr;
-        curr -> right = temp;
-        temp -> down = newNode;
-        newNode -> up = temp;
+        curr->right->left = temp;
+        temp->right = curr->right;
+        temp->left = curr;
+        curr->right = temp;
+        temp->down = newNode;
+        newNode->up = temp;
         nodeCount[l]++;
-        levelUP(nodes, temp , l + 1);
+        levelUP(nodes, temp, l + 1);
     }
 }
-
-void SkipList::print() {
-    SkipNode* start = head; // Start at the topmost level
+template <typename T>
+void SkipList<T>::print() {
+    SkipNode<T>* start = head; // Start at the topmost level
     while (start) {         // Traverse downwards through the levels
-        SkipNode* temp = start;
-        while (temp!= NULL ) {      // Traverse right through the current level
+        SkipNode<T>* temp = start;
+        while (temp != NULL) {      // Traverse right through the current level
             cout << temp->key;
             if (temp->right) {
                 cout << " -> ";
@@ -130,14 +128,14 @@ void SkipList::print() {
         start = start->down; // Move to the level below
     }
 }
-
-string SkipList::search(int key) {
-    SkipNode* temp = head;
-    while(temp != NULL) {
-        if(temp->key == key) {
+template <typename T>
+string SkipList<T>::search(T key) {
+    SkipNode<T>* temp = head;
+    while (temp != NULL) {
+        if (temp->key == key) {
             return "Found\n";
         }
-        else if(temp-> right -> key > key) {
+        else if (temp->right->key > key) {
             temp = temp->down;
         }
         else {
@@ -146,9 +144,9 @@ string SkipList::search(int key) {
     }
     return "Not Found\n";
 }
-
-void SkipList::remove(int key) {
-    SkipNode* temp = head;
+template <typename T>
+void SkipList<T>::remove(T key) {
+    SkipNode<T>* temp = head;
     bool found = false;
     int cur = Level;
     // Traverse the skip list to find the node with the key
@@ -157,16 +155,18 @@ void SkipList::remove(int key) {
             temp = temp->right;
             found = true;
             break;
-        } else if (temp->right == NULL || temp->right->key > key) {
+        }
+        else if (temp->right == NULL || temp->right->key > key) {
             temp = temp->down; // Move down a level
             cur--;
-        } else {
+        }
+        else {
             temp = temp->right; // Move to the next node on the same level
         }
     }
     // Remove the node from all levels
     while (temp != NULL) {
-        SkipNode* down = temp->down; // Save the pointer to the node below
+        SkipNode<T>* down = temp->down; // Save the pointer to the node below
         // Unlink the current node
         if (temp->left) {
             temp->left->right = temp->right;
@@ -174,8 +174,8 @@ void SkipList::remove(int key) {
         if (temp->right) {
             temp->right->left = temp->left;
         }
-        if(down) {
-            down -> up = NULL;
+        if (down) {
+            down->up = NULL;
         }
         nodeCount[cur]--;
         if (nodeCount[cur] == 0) {
@@ -188,26 +188,28 @@ void SkipList::remove(int key) {
     }
     CleanUp();
 }
-
-void SkipList::inCrementLevel() {
+template <typename T>
+void SkipList<T>::inCrementLevel() {
     Level++;
 }
-void SkipList::deCrementLevel() {
+template <typename T>
+void SkipList<T>::deCrementLevel() {
     Level--;
 }
-void SkipList::CleanUp() {
+template <typename T>
+void SkipList<T>::CleanUp() {
     int cur = Level;
     bool foundToBeDeleted = true;
-    while(cur != 1 && foundToBeDeleted) {
-        if(nodeCount[cur] == 2 || nodeCount[cur] == nodeCount[cur - 1]) {
+    while (cur != 1 && foundToBeDeleted) {
+        if (nodeCount[cur] == 2 || nodeCount[cur] == nodeCount[cur - 1]) {
             deCrementLevel();
-            SkipNode* temp = head ;
+            SkipNode<T>* temp = head;
             head = head->down;
             tail = tail->down;
-            while(temp != NULL) {
-                temp -> down -> up = NULL;
-                SkipNode* t = temp;
-                temp = temp -> right;
+            while (temp != NULL) {
+                temp->down->up = NULL;
+                SkipNode<T>* t = temp;
+                temp = temp->right;
                 delete t;
             }
             cur--;
@@ -217,8 +219,47 @@ void SkipList::CleanUp() {
         }
     }
 }
+vector<int> RandomizeNumbers(int len, int low, int high) {
+    vector<int> ans;
+    for (int i = 0; i < len; i++) {
+        ans.push_back(low + (std::rand() % (high - low + 1)));
+    }
+    return ans;
+}
+//////////////////////////// Testing |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+template <typename T>
+void TestInsert(SkipList<T>& s,vector<T>& nums) {
+    cout << "Elements to be inserted: ";
+    for (auto num : nums) {
+        cout << num << " ";
+    }
+    cout << endl;
+    for (auto num : nums) {
+        s.insert(num);
+    }
+    cout << "Skip List Elements: \n";
+    s.print();
+}
+template <typename T>
+void TestDelete(SkipList<T>& s , vector<T>& nums) {
+    cout << "Elements to be Deleted: ";
+    for (auto num : nums) {
+        cout << num << " ";
+    }
+    cout << endl;
+    for (auto num : nums) {
+        s.remove(num);
+        s.print();
+        cout << "===================================================================\n";
+    }
+}
 
+pair<int, int> RandomRange() {
+    int a = std::rand() % 2000;
+    int b = a + std::rand() % 3000;
+    return { min(a, b), max(a, b) };
 
-
-
-#endif // SKIPLIST_H
+}
+int RandomLength() {
+    return std::rand() % 20;
+}
