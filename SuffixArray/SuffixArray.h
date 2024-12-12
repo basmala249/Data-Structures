@@ -5,6 +5,7 @@
 using namespace std;
 
 template <typename T>
+//Sorting O(nlogn)
 void mergeSort(int left, int mid, int right, T* arr) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
@@ -50,23 +51,26 @@ void merge(int left, int right, T arr[]) {
     merge(mid + 1, right, arr);
     mergeSort(left, mid, right, arr);
 }
-
+//SuffixNode 
 template <typename T>
 struct SuffixPair {
-    int index;
-    T first;
-    T second;
+    int index;//Index stored at
+    T first;//first h elemnts 
+    T second;// last h elemnts
     SuffixPair() : index(0), first(0), second(0) {}
     SuffixPair(int idx, T f, T s) : index(idx), first(f), second(s) {}
+    //for sorting
     bool operator<(const SuffixPair<T>& other) const {
         if (first != other.first) {
             return first < other.first;
         }
         return second < other.second;
     }
+    //for comparsion
     bool operator==(const SuffixPair<T>& other) const {
         return first == other.first && second == other.second;
     }
+   //for printing
     friend ostream& operator<<(ostream& os, const SuffixPair<T>& p) {
         os << p.index << " " << p.first << " " << p.second << '\n';
         return os;
@@ -74,11 +78,11 @@ struct SuffixPair {
 };
 
 class SuffixArray {
-    char* suffix;
-    int* Vals;
+    char* suffix;//String to Get Suffixes
+    int* Vals;//order after sorted
     int size;
-    void InitalizeVal();
-    int GetMax();
+    void InitalizeVal();//to get K = 1
+    int GetMax();to compare with size to break
 public:
     SuffixArray(const char* sffx);
     ~SuffixArray();
@@ -88,6 +92,7 @@ public:
 
 SuffixArray::SuffixArray(const char* sffx) {
     size = 0;
+    //coping string in to suffix till null pointer
     while (sffx[size] != '\0') {
         size++;
     }
@@ -119,11 +124,14 @@ int SuffixArray::GetMax() {
 
 void SuffixArray::InitalizeVal() {
     SuffixPair<char> arr[size];
+    //first Store
     for (int i = 0; i < size; i++) {
         arr[i] = SuffixPair<char>(i, suffix[i], suffix[i]);
     }
+    //Sort
     merge(0, size - 1, arr);
     int Start = 0;
+    //fill Array
     Vals[arr[0].index] = Start++;
     for (int i = 1; i < size; i++) {
         if(arr[i] == arr[i - 1]) {
@@ -140,6 +148,7 @@ void SuffixArray::ConstructUsingPrefixDoubling() {
     int start = 1;
     SuffixPair<int> arr[size];
     while(mx != size - 1) {
+        //loops till there is no duplicates exits
        for(int i = 0; i < size; i++) {
            SuffixPair<int> p = SuffixPair<int>(i, Vals[i] , Vals[min(size - 1 , i + start)]);
            arr[i] = p;
@@ -158,18 +167,19 @@ void SuffixArray::ConstructUsingPrefixDoubling() {
        start++;
        mx = GetMax();
     }
+    //when finish fill index order from high to low to help for search
     for(int i = 0; i < size; i++) {
         Vals[i] = arr[i].index;
     }
 }
-
+//printing Indexes
 void SuffixArray::Print() const {
     for (int i = 0; i < size; ++i) {
         cout << Vals[i] << " ";
     }
     cout << '\n';
 }
-
+//delete pointers
 SuffixArray::~SuffixArray() {
     delete[] suffix;
     delete[] Vals;
