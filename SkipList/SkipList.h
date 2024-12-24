@@ -1,7 +1,4 @@
-#include <bits/stdc++.h>
-using namespace std;
-#define ll long long
-ll negINF = -1e9, posINF = 1e9;
+
 template <typename T>
 struct SkipNode {
     T key;
@@ -9,10 +6,9 @@ struct SkipNode {
     SkipNode<T>* down = NULL;
     SkipNode<T>* right = NULL;
     SkipNode<T>* left = NULL;
-    SkipNode(T val) {
-        key = val;
-    }
+    SkipNode(T val) :key(val){}
 };
+
 template <typename T>
 class SkipList {
     SkipNode<T>* head = NULL;
@@ -22,7 +18,7 @@ class SkipList {
     bool tossCoin();
     void levelUP(vector<SkipNode<T>*>&, SkipNode<T>*, int);
 public:
-    SkipList();
+    SkipList(T startPoint , T endPoint);
     // ~SkipList();
     void insert(T key);
     string search(T key);
@@ -31,16 +27,22 @@ public:
     void print();
     void inCrementLevel();
     void deCrementLevel();
+    SkipNode<T>* searchNode(T key); // Added function
+    SkipNode<T>* getHead() { return head; } // Added function
 };
+
+
 template <typename T>
-SkipList<T>::SkipList() {
-    head = new SkipNode<T>(negINF);
-    tail = new SkipNode<T>(posINF);
+SkipList<T>::SkipList(T startPoint , T endPoint) {
+    head = new SkipNode<T>(startPoint);
+    tail = new SkipNode<T>(endPoint);
     head->right = tail;
     tail->left = head;
     Level = 1;
     nodeCount[Level] += 2;
 }
+
+
 template <typename T>
 void SkipList<T>::insert(T key) {
     vector<SkipNode<T>*> Randomized;
@@ -69,12 +71,16 @@ void SkipList<T>::insert(T key) {
     }
     levelUP(Randomized, newNode, l + 1);
 }
+
+
 template <typename T>
 bool SkipList<T>::tossCoin() {
     // Generate a random number (0 or 1)
     int result = rand() % 2; // 0 for Tail, 1 for Head
     return result;
 }
+
+
 template <typename T>
 void SkipList<T>::levelUP(vector<SkipNode<T>*>& nodes, SkipNode<T>* newNode, int l) {
     if (tossCoin()) {
@@ -112,6 +118,8 @@ void SkipList<T>::levelUP(vector<SkipNode<T>*>& nodes, SkipNode<T>* newNode, int
         levelUP(nodes, temp, l + 1);
     }
 }
+
+
 template <typename T>
 void SkipList<T>::print() {
     SkipNode<T>* start = head; // Start at the topmost level
@@ -128,6 +136,8 @@ void SkipList<T>::print() {
         start = start->down; // Move to the level below
     }
 }
+
+
 template <typename T>
 string SkipList<T>::search(T key) {
     SkipNode<T>* temp = head;
@@ -144,6 +154,8 @@ string SkipList<T>::search(T key) {
     }
     return "Not Found\n";
 }
+
+
 template <typename T>
 void SkipList<T>::remove(T key) {
     SkipNode<T>* temp = head;
@@ -188,14 +200,20 @@ void SkipList<T>::remove(T key) {
     }
     CleanUp();
 }
+
+
 template <typename T>
 void SkipList<T>::inCrementLevel() {
     Level++;
 }
+
+
 template <typename T>
 void SkipList<T>::deCrementLevel() {
     Level--;
 }
+
+
 template <typename T>
 void SkipList<T>::CleanUp() {
     int cur = Level;
@@ -218,4 +236,38 @@ void SkipList<T>::CleanUp() {
             foundToBeDeleted = false;
         }
     }
+}
+
+vector<int> RandomizeNumbers(int len, int low, int high) {
+    vector<int> ans;
+    for (int i = 0; i < len; i++) {
+        ans.push_back(low + (std::rand() % (high - low + 1)));
+    }
+    return ans;
+}
+
+pair<int, int> RandomRange() {
+    int a = std::rand() % 2000;
+    int b = a + std::rand() % 3000;
+    return { min(a, b), max(a, b) };
+
+}
+
+int RandomLength() {
+    return std::rand() % 20;
+}
+
+template <typename T>
+SkipNode<T>* SkipList<T>::searchNode(T key) {
+    SkipNode<T>* temp = head;
+    while (temp != NULL) {
+        if (temp->key == key) {
+            return temp;
+        } else if (temp->right->key > key) {
+            temp = temp->down;
+        } else {
+            temp = temp->right;
+        }
+    }
+    return NULL;
 }
