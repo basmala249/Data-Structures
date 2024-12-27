@@ -27,6 +27,9 @@ struct DSU{
   bool sameGroup(int u , int v){
     return find(u) == find(v);
   }
+  int getSize(int u){
+    return group[find(u)];
+  }
 };
 int main() {
     ios_base::sync_with_stdio(false);
